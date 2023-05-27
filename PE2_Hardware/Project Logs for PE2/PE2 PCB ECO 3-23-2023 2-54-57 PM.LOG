@@ -1,0 +1,9 @@
+Removed Pin From Net: NetName=SWDIO Pin=P3-2
+Removed Pin From Net: NetName=RESET Pin=P3-4
+Removed Pin From Net: NetName=GND Pin=XTAL1-GND
+Removed Pin From Net: NetName=GND Pin=XTAL1-GND
+Removed Pin From Net: NetName=GND Pin=XTAL2-GND
+Removed Pin From Net: NetName=GND Pin=XTAL2-GND
+Added Pin To Net: NetName=RESET Pin=P3-2
+Added Pin To Net: NetName=SWDIO Pin=P3-4
+Added Member To Class: ClassName=U_MCU Member=Component P3 Header 5

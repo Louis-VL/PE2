@@ -1,0 +1,4 @@
+Record=TopLevelDocument|FileName=PE2.SchDoc
+Record=SheetSymbol|SourceDocument=PE2.SchDoc|Designator=U_MCU|SchDesignator=U_MCU|FileName=MCU.SchDoc|SymbolType=Normal|RawFileName=MCU.SchDoc|DesignItemId= |SourceLibraryName= |ObjectKind=Sheet Symbol|RevisionGUID= |ItemGUID= |VaultGUID= 
+Record=SheetSymbol|SourceDocument=PE2.SchDoc|Designator=U_POWER|SchDesignator=U_POWER|FileName=POWER.SchDoc|SymbolType=Normal|RawFileName=POWER.SchDoc|DesignItemId= |SourceLibraryName= |ObjectKind=Sheet Symbol|RevisionGUID= |ItemGUID= |VaultGUID= 
+Record=SheetSymbol|SourceDocument=PE2.SchDoc|Designator=U_RF|SchDesignator=U_RF|FileName=RF.SchDoc|SymbolType=Normal|RawFileName=RF.SchDoc|DesignItemId= |SourceLibraryName= |ObjectKind=Sheet Symbol|RevisionGUID= |ItemGUID= |VaultGUID= 

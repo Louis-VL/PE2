@@ -1,0 +1,4 @@
+Change Component Comment : Designator=VR2 Old Comment=XC6804A3E1QR-G New Comment=Battery charger
+Change Component Library : Designator=U1 Old Library=AP2112.SchLib New Library=PE2_Schematics.SchLib
+Change Component Library : Designator=VR2 Old Library=AP2112.SchLib New Library=PE2_Schematics.SchLib
+Added Pin To Net: NetName=GND Pin=VR2-9

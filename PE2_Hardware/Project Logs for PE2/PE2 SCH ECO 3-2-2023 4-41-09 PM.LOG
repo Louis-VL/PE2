@@ -1,0 +1,48 @@
+Remove Pin=P2-3 From Net=SWDIO
+Remove Pin=P2-5 From Net=SWCLK
+Remove Pin=U2-10 From Net=BEL
+Remove Pin=U2-34 From Net=SWDIO
+Remove Pin=U2-37 From Net=SWCLK
+Change Component Footprint: Designator=R4 Old Footprint=RES_0402 New Footprint=RES_0603
+Change Component Footprint: Designator=R5 Old Footprint=RES_0402 New Footprint=RES_0603
+Change Component Footprint: Designator=SB3 Old Footprint=Solder bridge RF 0.254 New Footprint=Solder bridge
+Change Component Designator: OldDesignator=ANT3 NewDesignator=ANT?
+Change Component Designator: OldDesignator=C2 NewDesignator=C4
+Change Component Designator: OldDesignator=C3 NewDesignator=C2
+Change Component Designator: OldDesignator=C4 NewDesignator=C3
+Change Component Designator: OldDesignator=C6 NewDesignator=C?
+Change Component Designator: OldDesignator=C7 NewDesignator=C?
+Change Component Designator: OldDesignator=C8 NewDesignator=C?
+Change Component Designator: OldDesignator=C9 NewDesignator=C?
+Change Component Designator: OldDesignator=C10 NewDesignator=C?
+Change Component Designator: OldDesignator=C11 NewDesignator=C?
+Change Component Designator: OldDesignator=C12 NewDesignator=C?
+Change Component Designator: OldDesignator=C13 NewDesignator=C?
+Change Component Designator: OldDesignator=C14 NewDesignator=C?
+Change Component Designator: OldDesignator=C15 NewDesignator=C?
+Change Component Designator: OldDesignator=C16 NewDesignator=C9
+Change Component Designator: OldDesignator=C17 NewDesignator=C10
+Change Component Designator: OldDesignator=C18 NewDesignator=C11
+Change Component Designator: OldDesignator=C19 NewDesignator=C12
+Change Component Designator: OldDesignator=C20 NewDesignator=C?
+Change Component Designator: OldDesignator=C21 NewDesignator=C?
+Change Component Designator: OldDesignator=C22 NewDesignator=C?
+Change Component Designator: OldDesignator=C24 NewDesignator=C?
+Change Component Designator: OldDesignator=D1 NewDesignator=D2
+Change Component Designator: OldDesignator=D2 NewDesignator=D3
+Change Component Designator: OldDesignator=D3 NewDesignator=D1
+Change Component Designator: OldDesignator=L3 NewDesignator=L?
+Change Component Designator: OldDesignator=L4 NewDesignator=L?
+Change Component Designator: OldDesignator=L5 NewDesignator=L?
+Change Component Designator: OldDesignator=P3 NewDesignator=P?
+Change Component Designator: OldDesignator=R4 NewDesignator=R?
+Change Component Designator: OldDesignator=R5 NewDesignator=R?
+Change Component Designator: OldDesignator=R7 NewDesignator=R?
+Change Component Designator: OldDesignator=R8 NewDesignator=R?
+Change Component Designator: OldDesignator=R9 NewDesignator=R?
+Change Component Designator: OldDesignator=SB3 NewDesignator=SB?
+Change Component Designator: OldDesignator=U2 NewDesignator=U1
+Change Component Designator: OldDesignator=U3 NewDesignator=U?
+Change Component Designator: OldDesignator=XTAL2 NewDesignator=XTAL?
+Change Component Designator: OldDesignator=XTAL3 NewDesignator=XTAL?
+Change Pin Designator/Name:  Old Designator=D3-1 Old Name=I/O 1 New Designator =I/O 1 New Name=1

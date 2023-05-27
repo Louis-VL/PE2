@@ -1,0 +1,9 @@
+Removed Member From Class: ClassName=U_MCU Member=R5
+Removed Member From Class: ClassName=U_MCU Member=XTAL3
+Change Component Footprint: Designator=SB3 Old Footprint=Solder bridge New Footprint=Solder bridge RF 0.254
+Added Pin To Net: NetName=GND Pin=C21-1
+Added Member To Class: ClassName=U_RF Member=Component C8 0402
+Added Member To Class: ClassName=U_RF Member=Component L5 0402
+Added Member To Class: ClassName=U_MCU Member=Component R8
+Added Member To Class: ClassName=U_MCU Member=Component R?
+Added Member To Class: ClassName=U_MCU Member=Component XTAL2 32Mhz
