@@ -22,7 +22,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "NRF24L01.h"
+#include "string.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -62,8 +63,37 @@ static void MX_I2C1_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-uint8_t TxAddress[] = {0xEE,0xDD,0xCC,0xBB,0xAA};
+uint8_t TxAddress[] = {0xEE,0xDD,0xCC,0xBB,0xAA}; //address of the send data pipe
 uint8_t TxData[] = "Hello World\n";
+
+#include <stdio.h>
+#include <errno.h>
+#include <sys/stat.h>
+#include <sys/times.h>
+#include <sys/unistd.h>
+int _write(int file, char *ptr, int len) {
+    HAL_StatusTypeDef xStatus;
+    switch (file) {
+    case STDOUT_FILENO: /*stdout*/
+		xStatus = HAL_UART_Transmit(&huart2, (uint8_t*)ptr, len, HAL_MAX_DELAY);
+		if (xStatus != HAL_OK) {
+			errno = EIO;
+			return -1;
+		}
+        break;
+    case STDERR_FILENO: /*stderr*/
+		xStatus = HAL_UART_Transmit(&huart2, (uint8_t*)ptr, len, HAL_MAX_DELAY);
+		if (xStatus != HAL_OK) {
+			errno = EIO;
+			return -1;
+		}
+        break;
+    default:
+        errno = EBADF;
+        return -1;
+    }
+    return len;
+}
 /* USER CODE END 0 */
 
 /**
@@ -110,14 +140,11 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-	  HAL_GPIO_WritePin(LEDB_GPIO_Port, LEDB_Pin, 1);
-	  	 	  	  //HAL_UART_Transmit(&huart2, "Test\r\n", 16, 1000);
-	  	 	  	  //TEST TX
-	  	 	  	  if (NRF24_Transmit(TxData) == 1){
-	  	 	  		  HAL_GPIO_TogglePin(LEDA_GPIO_Port, LEDA_Pin);
-	  	 	  	  }
-
-	  	 	  	  HAL_Delay(1000);
+	  if (NRF24_Transmit(TxData) == 1){
+	 	  	  		 HAL_GPIO_TogglePin(LEDA_GPIO_Port, LEDA_Pin);
+	 	  	  	 	 printf("TX is working!!!\r\n");
+	 	  	  	 HAL_Delay(1000);
+	 	  	  	 }
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
@@ -279,7 +306,8 @@ static void MX_USART2_UART_Init(void)
   huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
   huart2.Init.OverSampling = UART_OVERSAMPLING_16;
   huart2.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
-  huart2.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+  huart2.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_SWAP_INIT;
+  huart2.AdvancedInit.Swap = UART_ADVFEATURE_SWAP_ENABLE;
   if (HAL_UART_Init(&huart2) != HAL_OK)
   {
     Error_Handler();
@@ -306,16 +334,13 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, BUZZ_Pin|LEDA_Pin|LEDB_Pin|RF_CE_Pin
-                          |RF_IRQ_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, BUZZ_Pin|LEDA_Pin|LEDB_Pin|RF_CE_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(SPI2_CS_GPIO_Port, SPI2_CS_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pins : BUZZ_Pin LEDA_Pin LEDB_Pin RF_CE_Pin
-                           RF_IRQ_Pin */
-  GPIO_InitStruct.Pin = BUZZ_Pin|LEDA_Pin|LEDB_Pin|RF_CE_Pin
-                          |RF_IRQ_Pin;
+  /*Configure GPIO pins : BUZZ_Pin LEDA_Pin LEDB_Pin RF_CE_Pin */
+  GPIO_InitStruct.Pin = BUZZ_Pin|LEDA_Pin|LEDB_Pin|RF_CE_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
@@ -345,7 +370,7 @@ void Error_Handler(void)
   __disable_irq();
   while (1)
   {
-	  HAL_GPIO_WritePin(LEDB_GPIO_Port, LEDB_Pin, 1);
+
   }
   /* USER CODE END Error_Handler_Debug */
 }

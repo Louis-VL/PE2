@@ -68,8 +68,6 @@ void Error_Handler(void);
 #define SPI2_CS_GPIO_Port GPIOB
 #define RF_CE_Pin GPIO_PIN_8
 #define RF_CE_GPIO_Port GPIOA
-#define RF_IRQ_Pin GPIO_PIN_9
-#define RF_IRQ_GPIO_Port GPIOA
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

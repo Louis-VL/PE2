@@ -19,7 +19,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "string.h"
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "NRF24L01.h"
@@ -61,6 +61,37 @@ static void MX_USART2_UART_Init(void);
 /* USER CODE BEGIN 0 */
 uint8_t RxAddress[] = {0xEE,0xDD,0xCC,0xBB,0xAA};
 uint8_t RxData[32];
+
+uint8_t data[50];
+
+#include <stdio.h>
+#include <errno.h>
+#include <sys/stat.h>
+#include <sys/times.h>
+#include <sys/unistd.h>
+int _write(int file, char *ptr, int len) {
+    HAL_StatusTypeDef xStatus;
+    switch (file) {
+    case STDOUT_FILENO: /*stdout*/
+		xStatus = HAL_UART_Transmit(&huart2, (uint8_t*)ptr, len, HAL_MAX_DELAY);
+		if (xStatus != HAL_OK) {
+			errno = EIO;
+			return -1;
+		}
+        break;
+    case STDERR_FILENO: /*stderr*/
+		xStatus = HAL_UART_Transmit(&huart2, (uint8_t*)ptr, len, HAL_MAX_DELAY);
+		if (xStatus != HAL_OK) {
+			errno = EIO;
+			return -1;
+		}
+        break;
+    default:
+        errno = EBADF;
+        return -1;
+    }
+    return len;
+}
 /* USER CODE END 0 */
 
 /**
@@ -97,6 +128,8 @@ int main(void)
   NRF24_Init();
 
   NRF24_RxMode(RxAddress, 10);
+
+  NRF24_ReadAll(data);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -104,12 +137,13 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-
-	  if(isDataAvailable(1) == 1)
-	  {
-		  NRF24_Receive(RxData);
-		  HAL_UART_Transmit(&huart2, RxData, strlen(RxData), 1000);
-	  }
+	  if(isDataAvailable(2) == 1)
+	  	  {
+		  	  HAL_GPIO_TogglePin(LEDA_GPIO_Port, LEDA_Pin);
+	  		  NRF24_Receive(RxData);
+	  		  HAL_UART_Transmit(&huart2, RxData, strlen((char *)RxData), 1000);
+	  		  printf("\n%d\r\n", RxData);
+	  	  }
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
@@ -127,10 +161,13 @@ void SystemClock_Config(void)
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+  RCC_OscInitStruct.HSEState = RCC_HSE_ON;
+  RCC_OscInitStruct.HSEPredivValue = RCC_HSE_PREDIV_DIV4;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
-  RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
-  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
+  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
+  RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL5;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
     Error_Handler();
@@ -139,8 +176,8 @@ void SystemClock_Config(void)
   */
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
-  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_HSI;
-  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV4;
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
 
@@ -206,7 +243,7 @@ static void MX_USART2_UART_Init(void)
 
   /* USER CODE END USART2_Init 1 */
   huart2.Instance = USART2;
-  huart2.Init.BaudRate = 38400;
+  huart2.Init.BaudRate = 9600;
   huart2.Init.WordLength = UART_WORDLENGTH_8B;
   huart2.Init.StopBits = UART_STOPBITS_1;
   huart2.Init.Parity = UART_PARITY_NONE;
@@ -214,7 +251,8 @@ static void MX_USART2_UART_Init(void)
   huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
   huart2.Init.OverSampling = UART_OVERSAMPLING_16;
   huart2.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
-  huart2.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+  huart2.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_SWAP_INIT;
+  huart2.AdvancedInit.Swap = UART_ADVFEATURE_SWAP_ENABLE;
   if (HAL_UART_Init(&huart2) != HAL_OK)
   {
     Error_Handler();
@@ -235,14 +273,29 @@ static void MX_GPIO_Init(void)
   GPIO_InitTypeDef GPIO_InitStruct = {0};
 
   /* GPIO Ports Clock Enable */
+  __HAL_RCC_GPIOC_CLK_ENABLE();
+  __HAL_RCC_GPIOF_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(SPI2_CS_GPIO_Port, SPI2_CS_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, BUZZ_Pin|LEDA_Pin|LEDB_Pin|RF_CE_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, RF_CE_Pin|RF_IRQ_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(SPI2_CS_GPIO_Port, SPI2_CS_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin : BEL_Pin */
+  GPIO_InitStruct.Pin = BEL_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(BEL_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : BUZZ_Pin LEDA_Pin LEDB_Pin RF_CE_Pin */
+  GPIO_InitStruct.Pin = BUZZ_Pin|LEDA_Pin|LEDB_Pin|RF_CE_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /*Configure GPIO pin : SPI2_CS_Pin */
   GPIO_InitStruct.Pin = SPI2_CS_Pin;
@@ -250,13 +303,6 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(SPI2_CS_GPIO_Port, &GPIO_InitStruct);
-
-  /*Configure GPIO pins : RF_CE_Pin RF_IRQ_Pin */
-  GPIO_InitStruct.Pin = RF_CE_Pin|RF_IRQ_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
 }
 

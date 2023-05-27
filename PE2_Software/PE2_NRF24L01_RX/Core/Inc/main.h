@@ -58,12 +58,18 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define BEL_Pin GPIO_PIN_13
+#define BEL_GPIO_Port GPIOC
+#define BUZZ_Pin GPIO_PIN_4
+#define BUZZ_GPIO_Port GPIOA
+#define LEDA_Pin GPIO_PIN_5
+#define LEDA_GPIO_Port GPIOA
+#define LEDB_Pin GPIO_PIN_6
+#define LEDB_GPIO_Port GPIOA
 #define SPI2_CS_Pin GPIO_PIN_12
 #define SPI2_CS_GPIO_Port GPIOB
 #define RF_CE_Pin GPIO_PIN_8
 #define RF_CE_GPIO_Port GPIOA
-#define RF_IRQ_Pin GPIO_PIN_9
-#define RF_IRQ_GPIO_Port GPIOA
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
