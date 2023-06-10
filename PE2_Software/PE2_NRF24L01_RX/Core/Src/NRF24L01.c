@@ -127,7 +127,7 @@ void nrf24_reset(uint8_t REG)
 	nrf24_WriteReg(SETUP_AW, 0x03);
 	nrf24_WriteReg(SETUP_RETR, 0x03);
 	nrf24_WriteReg(RF_CH, 0x02);
-	nrf24_WriteReg(RF_SETUP, 0x0E);
+	nrf24_WriteReg(RF_SETUP, 0x26);
 	nrf24_WriteReg(STATUS, 0x00);
 	nrf24_WriteReg(OBSERVE_TX, 0x00);
 	nrf24_WriteReg(CD, 0x00);
@@ -173,7 +173,14 @@ void NRF24_Init(void){
 
 	nrf24_WriteReg(RF_CH, 0);		//Will be setup during TX or RX
 
-	nrf24_WriteReg(RF_SETUP, 0x0E);	//Power = 0db, data rate = 2Mbps zie datasheet for other options
+	nrf24_WriteReg(RF_SETUP,  0x26);	//Power = 0dbm, data rate = 250kbps zie datasheet for other options
+	//b7 = 0 (Enables continuous carrier transmit when high)
+	//b6 = 0 (reserved)
+	//b5 = 1 (Set RF Data Rate to 250kbps)
+	//b4 = 0 (Force PLL lock signal. Only used in test)
+	//b3 = 0 (Select between the high speed data rates. This bit is dont't care if b5 = 1)
+	//b2&1 = 11 (Set RF output power in TX mode, '00' = -18dBm, '01' = -12dBm, '10' = -6dBm, '11' 0dBm)
+	//b0 = 0/1 (Dont care)
 
 	//enable the chip after configuring the device
 	CE_Enable();

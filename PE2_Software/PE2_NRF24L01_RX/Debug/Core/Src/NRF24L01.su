@@ -9,9 +9,9 @@ NRF24L01.c:88:6:nrf24_ReadReg_Multi	24	static
 NRF24L01.c:101:6:nrfsendCmd	16	static
 NRF24L01.c:111:6:nrf24_reset	40	static
 NRF24L01.c:157:6:NRF24_Init	8	static
-NRF24L01.c:184:6:NRF24_TxMode	24	static
-NRF24L01.c:204:9:NRF24_Transmit	24	static
-NRF24L01.c:241:6:NRF24_RxMode	24	static
-NRF24L01.c:281:9:isDataAvailable	24	static
-NRF24L01.c:293:6:NRF24_Receive	24	static
-NRF24L01.c:317:6:NRF24_ReadAll	32	static
+NRF24L01.c:191:6:NRF24_TxMode	24	static
+NRF24L01.c:211:9:NRF24_Transmit	24	static
+NRF24L01.c:248:6:NRF24_RxMode	24	static
+NRF24L01.c:288:9:isDataAvailable	24	static
+NRF24L01.c:300:6:NRF24_Receive	24	static
+NRF24L01.c:324:6:NRF24_ReadAll	32	static
