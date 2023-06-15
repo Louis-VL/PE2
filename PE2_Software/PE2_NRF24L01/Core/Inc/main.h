@@ -58,6 +58,8 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define BEL_Pin GPIO_PIN_13
+#define BEL_GPIO_Port GPIOC
 #define BUZZ_Pin GPIO_PIN_4
 #define BUZZ_GPIO_Port GPIOA
 #define LEDA_Pin GPIO_PIN_5

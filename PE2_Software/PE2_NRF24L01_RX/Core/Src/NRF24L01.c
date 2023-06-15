@@ -292,9 +292,9 @@ uint8_t isDataAvailable(int pipenum){
 	{
 			nrf24_WriteReg(STATUS, (1<<6));
 
-			return 1;
+			return 1;	//data stored inside
 	}
-	return 0;
+	return 0;			//no data stored
 }
 
 void NRF24_Receive (uint8_t *data){

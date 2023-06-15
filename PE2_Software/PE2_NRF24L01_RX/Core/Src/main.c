@@ -92,6 +92,15 @@ int _write(int file, char *ptr, int len) {
     }
     return len;
 }
+
+//instructies tellen
+//Delay is 1 cycle  * 1/CLOCK * Count voor M7
+void __attribute__((naked)) SysTickDelayCount(unsigned long ulCount)
+{
+    __asm("    subs    r0, #1\n"
+          "    bne.n     SysTickDelayCount\n"
+          "    bx      lr");
+}
 /* USER CODE END 0 */
 
 /**
@@ -138,12 +147,28 @@ int main(void)
   {
     /* USER CODE END WHILE */
 	  if(isDataAvailable(2) == 1)
-	  	  {
-		  	  HAL_GPIO_TogglePin(LEDA_GPIO_Port, LEDA_Pin);
-	  		  NRF24_Receive(RxData);
-	  		  HAL_UART_Transmit(&huart2, RxData, strlen((char *)RxData), 1000);
-	  		  printf("\n%d\r\n", RxData);
-	  	  }
+	  {
+		  HAL_GPIO_WritePin(LEDA_GPIO_Port, LEDA_Pin, 1);
+		  HAL_GPIO_WritePin(LEDB_GPIO_Port, LEDB_Pin, 1);
+
+		  NRF24_Receive(RxData);
+		  HAL_UART_Transmit(&huart2, RxData, strlen((char *)RxData), 1000);
+		  printf("Er is iemand aan de deur\r\n");
+
+		  while(HAL_GPIO_ReadPin(BEL_GPIO_Port, BEL_Pin) == 1)
+		  {
+  			  //1khz tone
+  			  HAL_GPIO_WritePin(BUZZ_GPIO_Port, BUZZ_Pin, 1);
+  			  SysTickDelayCount(1250);
+
+  		  	  HAL_GPIO_WritePin(BUZZ_GPIO_Port, BUZZ_Pin, 0);
+  			  SysTickDelayCount(1250);
+  		  }
+
+		  HAL_GPIO_WritePin(LEDA_GPIO_Port, LEDA_Pin, 0);
+		  HAL_GPIO_WritePin(LEDB_GPIO_Port, LEDB_Pin, 0);
+
+	  }
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */

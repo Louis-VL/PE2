@@ -263,7 +263,7 @@ void NRF24_RxMode(uint8_t *Address, uint8_t channel){
 		 * The Address from DATA Pipe 2 to Data Pipe 5 differs only in the LSB
 		 * Their 4 MSB Bytes will still be same as Data Pipe 1
 		 *
-		 * For Eg->
+		 * For Ex->
 		 * Pipe 1 ADDR = 0xAABBCCDD11
 		 * Pipe 2 ADDR = 0xAABBCCDD22
 		 * Pipe 3 ADDR = 0xAABBCCDD33

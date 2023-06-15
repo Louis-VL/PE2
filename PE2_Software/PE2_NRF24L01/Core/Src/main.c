@@ -64,7 +64,7 @@ static void MX_I2C1_Init(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 uint8_t TxAddress[] = {0xEE,0xDD,0xCC,0xBB,0xAA}; //address of the send data pipe
-uint8_t TxData[] = "Hello World\n";
+uint8_t TxData[] = "Knock Knock\n";
 
 #include <stdio.h>
 #include <errno.h>
@@ -93,6 +93,16 @@ int _write(int file, char *ptr, int len) {
         return -1;
     }
     return len;
+}
+
+
+//instructies tellen
+//Delay is 1 cycle  * 1/CLOCK * Count voor M7
+void __attribute__((naked)) SysTickDelayCount(unsigned long ulCount)
+{
+    __asm("    subs    r0, #1\n"
+          "    bne.n     SysTickDelayCount\n"
+          "    bx      lr");
 }
 /* USER CODE END 0 */
 
@@ -129,10 +139,9 @@ int main(void)
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
   NRF24_Init();
-
   //TX MODE
-  NRF24_TxMode(TxAddress, 10);
-  HAL_GPIO_WritePin(LEDA_GPIO_Port, LEDA_Pin, 0);
+  //NRF24_TxMode(TxAddress, 10);
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -140,11 +149,34 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-	  if (NRF24_Transmit(TxData) == 1){
-	 	  	  		 HAL_GPIO_TogglePin(LEDA_GPIO_Port, LEDA_Pin);
-	 	  	  	 	 printf("TX is working!!!\r\n");
-	 	  	  	 HAL_Delay(1000);
-	 	  	  	 }
+
+	  HAL_GPIO_WritePin(LEDA_GPIO_Port, LEDA_Pin, 0);
+	  if(HAL_GPIO_ReadPin(BEL_GPIO_Port, BEL_Pin) == 0)
+	  {
+		  //TX MODE
+		  NRF24_TxMode(TxAddress, 10);
+		  HAL_Delay(10);
+
+		  if (NRF24_Transmit(TxData) == 1)
+		  {
+			  printf("Signal Send\r\n");
+			  HAL_GPIO_WritePin(LEDA_GPIO_Port, LEDA_Pin, 1);
+		  }
+
+		  while(HAL_GPIO_ReadPin(BEL_GPIO_Port, BEL_Pin) == 0)
+		  {
+			  //1khz tone
+		  	  HAL_GPIO_WritePin(BUZZ_GPIO_Port, BUZZ_Pin, 1);
+		  	  HAL_Delay(1);
+
+	  	  	  HAL_GPIO_WritePin(BUZZ_GPIO_Port, BUZZ_Pin, 0);
+	  	  	  HAL_Delay(1);
+	  	  }
+		  NRF24_Init();
+	  }
+	  //rx mode
+	  		  //if data is avaible
+
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
@@ -338,6 +370,12 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(SPI2_CS_GPIO_Port, SPI2_CS_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin : BEL_Pin */
+  GPIO_InitStruct.Pin = BEL_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(BEL_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : BUZZ_Pin LEDA_Pin LEDB_Pin RF_CE_Pin */
   GPIO_InitStruct.Pin = BUZZ_Pin|LEDA_Pin|LEDB_Pin|RF_CE_Pin;
